@@ -12,8 +12,8 @@ export class UserService {
     ){}
 
     
-    createUser(user:CreateUserDto):Promise<UserEntity>{
-        if (this.userRepository.userExist(user.email))
+    async createUser(user:CreateUserDto):Promise<UserEntity>{
+        if (await this.userRepository.userExist(user.email))
             throw new HttpException("User Email Already Exists!", HttpStatus.BAD_REQUEST )
         return this.userRepository.create(user);
     }

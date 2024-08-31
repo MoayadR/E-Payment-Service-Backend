@@ -10,17 +10,18 @@ export class UserRepository implements IUserRepository{
         private readonly userRepository:Repository<UserEntity>
     ){}
 
-    create(user: CreateUserDto): Promise<UserEntity> {
+    async create(user: CreateUserDto): Promise<UserEntity> {
         const createdUser = this.userRepository.create(user);
-        return this.userRepository.save(createdUser);
+        return await this.userRepository.save(createdUser);
     }
 
-    find(): Promise<UserEntity[]> {
-        return this.userRepository.find();
+    async find(): Promise<UserEntity[]> {
+        return await this.userRepository.find();
     }
 
-    userExist(email: string): boolean{
-       const user = this.userRepository.findOne({where:{'email':email}}); 
+    async userExist(email: string): Promise<boolean>{
+       const user = await this.userRepository.findOne({where:{'email':email}}); 
+       
        if(user) return true;
        return false;
     }
