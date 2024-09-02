@@ -1,10 +1,10 @@
-import { CreateUserDto } from "../dto/createUser.dto";
+import { RegisterUserDto } from "../../auth/dto/registerUser.dto";
 import { UserEntity } from "../entities/user.entity";
 
 export const IUserRepositoryToken = Symbol("IUserRepository")
 export interface IUserRepository{
 
-    create(user:CreateUserDto):Promise<UserEntity>
+    create(user:RegisterUserDto):Promise<UserEntity>
 
     find():Promise<UserEntity[]>
 

@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from 'src/auth/dto/createUser.dto';
-import { UserEntity } from 'src/auth/entities/user.entity';
-import { IUserRepository, IUserRepositoryToken } from 'src/auth/interfaces/user.interface';
-import { hashPassword } from 'src/auth/utils/bcrypt';
+import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { IUserRepository, IUserRepositoryToken } from 'src/user/interfaces/user.interface';
+import { hashPassword } from 'src/user/utils/bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,7 +13,7 @@ export class UserService {
     ){}
 
     
-    async createUser(user:CreateUserDto):Promise<UserEntity>{
+    async createUser(user:RegisterUserDto):Promise<UserEntity>{
         if (await this.userRepository.userExist(user.email))
             throw new HttpException("User Email Already Exists!", HttpStatus.BAD_REQUEST )
 
