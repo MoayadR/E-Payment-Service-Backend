@@ -10,6 +10,17 @@ export class UserRepository implements IUserRepository{
         private readonly userRepository:Repository<UserEntity>
     ){}
 
+    async findOneUsername(username:string): Promise<UserEntity> {
+        return await this.userRepository.findOne({where:{'username':username}});
+    }
+
+    async userExistUsername(username: string): Promise<boolean> {
+        const user = await this.userRepository.findOne({where:{'username':username}});
+
+        if(user) return true;
+        return false;
+    }
+
     async create(user: RegisterUserDto): Promise<UserEntity> {
         const createdUser = this.userRepository.create(user);
         return await this.userRepository.save(createdUser);
@@ -19,7 +30,7 @@ export class UserRepository implements IUserRepository{
         return await this.userRepository.find();
     }
 
-    async userExist(email: string): Promise<boolean>{
+    async userExistEmail(email: string): Promise<boolean>{
        const user = await this.userRepository.findOne({where:{'email':email}}); 
        
        if(user) return true;

@@ -7,7 +7,9 @@ export interface IUserRepository{
     create(user:RegisterUserDto):Promise<UserEntity>
 
     find():Promise<UserEntity[]>
+    findOneUsername(username:string):Promise<UserEntity>
 
-    userExist(email:string):Promise<boolean>
+    userExistUsername(username:string):Promise<boolean>
+    userExistEmail(email:string):Promise<boolean>
 
 }
