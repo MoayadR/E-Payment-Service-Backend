@@ -10,13 +10,13 @@ import { UserService } from 'src/user/services/user/user.service';
 export class AuthService {
     constructor(private jwtService:JwtService, private userService:UserService){}
 
-    async isValidRegisterUserEmail(email:string):Promise<boolean>{
+    async isValidRegisterEmail(email:string):Promise<boolean>{
         if (await this.userService.userExistEmail(email)){
             return false;
         } 
         return true;
     }
-    async isValidRegisterUserUsername(username:string):Promise<boolean>{
+    async isValidRegisterUsername(username:string):Promise<boolean>{
         if (await this.userService.userExistUsername(username)){
             return false;
         } 
@@ -30,7 +30,7 @@ export class AuthService {
             return null;
 
         if ( comparePasswords(payload.password , user.password))
-            return this.signJwtUser(user);
+            return user
 
         return null;
     }
@@ -45,4 +45,5 @@ export class AuthService {
         const {password , walletBalance , ...partialUser} = user;
         return this.jwtService.sign(partialUser);
     }
+
 }
