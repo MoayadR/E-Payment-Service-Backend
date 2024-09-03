@@ -6,11 +6,17 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { IRefreshTokenSymbol } from './interfaces/refreshToken.interface';
+import { RefreshTokenRepository } from './repos/refreshToken.repo';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './entities/refreshToken.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Module({
-  controllers: [AuthController],
-  providers: [AuthService , LocalStrategy , JwtStrategy],
+  controllers: [AuthController, ],
+  providers: [AuthService , LocalStrategy , JwtStrategy , {provide:IRefreshTokenSymbol, useClass:RefreshTokenRepository}],
   imports: [
+    TypeOrmModule.forFeature([UserEntity,RefreshToken]),
     UserModule,
     PassportModule,
     JwtModule.register({

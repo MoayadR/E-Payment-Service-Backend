@@ -1,14 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUser } from 'src/auth/dto/loginUser.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
+import { IRefreshTokenRepository, IRefreshTokenSymbol } from 'src/auth/interfaces/refreshToken.interface';
 import { comparePasswords, hashPassword } from 'src/auth/utils/bcrypt';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private jwtService:JwtService, private userService:UserService){}
+    constructor(private jwtService:JwtService, private userService:UserService , @Inject(IRefreshTokenSymbol) private refreshTokenRepo:IRefreshTokenRepository ){}
 
     async isValidRegisterEmail(email:string):Promise<boolean>{
         if (await this.userService.userExistEmail(email)){
@@ -46,4 +47,18 @@ export class AuthService {
         return this.jwtService.sign(partialUser);
     }
 
+    async getRefreshToken(user:UserEntity){
+        return await this.refreshTokenRepo.findOne(user); 
+    }
+    async getRefreshTokenByToken(token:string){
+        return await this.refreshTokenRepo.findOneByToken(token); 
+    }
+
+    async deleteRefreshToken(user:UserEntity){
+        return await this.refreshTokenRepo.delete(user);
+    }
+
+    async generateRefreshToken(user:UserEntity){
+        return await this.refreshTokenRepo.create(user);
+    }
 }

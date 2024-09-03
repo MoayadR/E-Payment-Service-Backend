@@ -5,12 +5,13 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { RefreshToken } from './auth/entities/refreshToken.entity';
 
 @Module({
   imports: [UserModule, TypeOrmModule.forRoot({
     type:"sqlite",
     database:`${__dirname}/../database/e-payment.db`,
-    entities:[UserEntity],
+    entities:[UserEntity, RefreshToken],
     synchronize:true,
   }), AuthModule],
   controllers: [AppController, ],
