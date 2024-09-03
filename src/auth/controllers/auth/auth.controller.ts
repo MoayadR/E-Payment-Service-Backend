@@ -87,10 +87,11 @@ export class AuthController {
 
     @Get('verify/:verificationToken')
     async verifyUser(@Param('verificationToken')verificationToken:string){
-       const token = await this.authService.getEmailVerificationWithToken(verificationToken); 
-       if (!token) throw new UnauthorizedException("Invalid Verfication link");
+       const emailVerification = await this.authService.getEmailVerificationWithToken(verificationToken); 
+       if (!emailVerification) throw new UnauthorizedException("Invalid Verfication link");
 
-        token.user.isActive = true;
-        return this.authService.updateUser(token.user); 
+        this.authService.deleteEmailVerification(emailVerification);
+        emailVerification.user.isActive = true;
+        return this.authService.updateUser(emailVerification.user); 
     }
 }

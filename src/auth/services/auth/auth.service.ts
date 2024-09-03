@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import Mail from 'nodemailer/lib/mailer';
 import { generateEmailHTML, host } from 'src/auth/constants/mail.constants';
 import { IEmailVerificationRepository, IEmailVerificationToken } from 'src/auth/interfaces/emailVerficationInterface';
+import { EmailVerification } from 'src/auth/entities/emailVerfication.entity';
 
 @Injectable()
 export class AuthService {
@@ -121,6 +122,10 @@ export class AuthService {
 
     async getEmailVerificationWithToken(verificationToken:string){
         return await this.emailVerificationRepo.findOneByToken(verificationToken);
+    }
+
+    async deleteEmailVerification(emailVerification:EmailVerification){
+        return this.emailVerificationRepo.delete(emailVerification);
     }
 
 }
