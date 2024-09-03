@@ -12,16 +12,14 @@ export class RefreshTokenRepository implements IRefreshTokenRepository{
          return await this.refreshTokenRepo.findOne({where:{refreshToken:refreshToken} , relations:['user']});
     }
 
-    async delete(user: UserEntity): Promise<DeleteResult> {
-        const refresh = await this.refreshTokenRepo.findOne({where:{user:user}});
-        if(!refresh) return null;
-        return this.refreshTokenRepo.delete(refresh);
+    async delete(token:RefreshToken): Promise<DeleteResult> {
+        return this.refreshTokenRepo.delete(token);
     }
 
     async create(user: UserEntity): Promise<RefreshToken> {
         const refresh = uuidv4();
         const date = new Date();
-        date.setDate(date.getDate() + 5);
+        date.setDate(date.getDate() + 10);
         
         const token = this.refreshTokenRepo.create({refreshToken:refresh,user:user , expiryDate:date});
         

@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginUser } from 'src/auth/dto/loginUser.dto';
+import { LoginUserDto } from 'src/auth/dto/loginUser.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
+import { RefreshToken } from 'src/auth/entities/refreshToken.entity';
 import { IRefreshTokenRepository, IRefreshTokenSymbol } from 'src/auth/interfaces/refreshToken.interface';
 import { comparePasswords, hashPassword } from 'src/auth/utils/bcrypt';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -24,7 +25,7 @@ export class AuthService {
         return true;
     }
 
-    async validateLoginUser(payload:LoginUser){
+    async validateLoginUser(payload:LoginUserDto){
         const user = await this.userService.getUserByUsername(payload.username); 
         
         if (!user)
@@ -54,11 +55,17 @@ export class AuthService {
         return await this.refreshTokenRepo.findOneByToken(token); 
     }
 
-    async deleteRefreshToken(user:UserEntity){
-        return await this.refreshTokenRepo.delete(user);
+    async deleteRefreshToken(token:RefreshToken){
+        return await this.refreshTokenRepo.delete(token);
     }
 
-    async generateRefreshToken(user:UserEntity){
+    async createRefreshToken(user:UserEntity){
         return await this.refreshTokenRepo.create(user);
+    }
+
+    isValidRefreshToken(token:RefreshToken){
+        if (token.expiryDate > new Date())
+            return true;
+        return false;
     }
 }

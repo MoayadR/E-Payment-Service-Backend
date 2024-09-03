@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import { refreshTokenDto } from 'src/auth/dto/refreshToken.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
@@ -28,8 +28,24 @@ export class AuthController {
     @UseGuards(LocalGuard)
     async login(@Req() req:Request){
         const jwt =  await this.authService.signJwtUser((req.user as UserEntity));
-        await this.authService.deleteRefreshToken(req.user as UserEntity);
-        const {refreshToken} = await this.authService.generateRefreshToken(req.user as UserEntity);
+        const token = await this.authService.getRefreshToken(req.user as UserEntity);
+
+        let refreshToken;
+
+        if (!token){
+            refreshToken = (await this.authService.createRefreshToken(req.user as UserEntity)).refreshToken;
+        }
+        else{
+            if (this.authService.isValidRefreshToken(token))
+            {
+                refreshToken = token.refreshToken;
+            }
+            else{
+                await this.authService.deleteRefreshToken(token);
+                refreshToken = (await this.authService.createRefreshToken(req.user as UserEntity)).refreshToken;
+            }
+        }
+        
         return {
             jwt,
             refreshToken,
@@ -39,11 +55,17 @@ export class AuthController {
     @Post('refresh')
     async refreshRefreshToken(@Body() payload:refreshTokenDto){
         const token = await this.authService.getRefreshTokenByToken(payload.refreshToken); 
-        if (!token) throw new HttpException("The Token is no longer Valid" , HttpStatus.BAD_REQUEST);
 
-        await this.authService.deleteRefreshToken(token.user);
+        if (!token)
+            throw new UnauthorizedException("Refresh Token is Invalid");
 
-        const {refreshToken} =await this.authService.generateRefreshToken(token.user);
+        await this.authService.deleteRefreshToken(token);
+
+        if (!this.authService.isValidRefreshToken(token)){
+            throw new UnauthorizedException("Refresh Token is Invalid");
+        }
+
+        const {refreshToken} =await this.authService.createRefreshToken(token.user);
 
         const jwt =  await this.authService.signJwtUser(token.user);
         return {jwt , refreshToken} 

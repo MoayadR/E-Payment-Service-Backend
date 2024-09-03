@@ -9,5 +9,5 @@ export interface IRefreshTokenRepository {
     findOne(user:UserEntity):Promise<RefreshToken>
     findOneByToken(refreshToken:string):Promise<RefreshToken>
 
-    delete(user:UserEntity):Promise<DeleteResult>
+    delete(token:RefreshToken):Promise<DeleteResult>
 }
