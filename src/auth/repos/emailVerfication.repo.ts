@@ -21,7 +21,7 @@ export class EmailVerficationRepository implements IEmailVerificationRepository{
         return await this.emailVerficationRepository.findOne({where:{user:user}});
     }
     async findOneByToken(token: string): Promise<EmailVerification> {
-        return await this.emailVerficationRepository.findOne({where:{verificationToken:token}});
+        return await this.emailVerficationRepository.findOne({where:{verificationToken:token} , relations:['user']});
     }
     async delete(emailVerfication: EmailVerification): Promise<DeleteResult> {
         return await this.emailVerficationRepository.delete(emailVerfication);

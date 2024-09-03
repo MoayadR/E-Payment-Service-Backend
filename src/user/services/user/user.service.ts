@@ -29,4 +29,8 @@ export class UserService {
     getUsers():Promise<UserEntity[]>{
         return  this.userRepository.find();
     }
+
+    async updateUser(user:UserEntity){
+        await this.userRepository.update(user);
+    }
 }

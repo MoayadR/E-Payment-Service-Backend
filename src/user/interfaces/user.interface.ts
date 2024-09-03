@@ -12,4 +12,5 @@ export interface IUserRepository{
     userExistUsername(username:string):Promise<boolean>
     userExistEmail(email:string):Promise<boolean>
 
+    update(user:UserEntity):Promise<UserEntity>
 }

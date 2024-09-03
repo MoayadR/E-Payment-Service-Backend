@@ -15,6 +15,8 @@ import { EmailVerification } from './entities/emailVerfication.entity';
 import { IEmailVerificationToken } from './interfaces/emailVerficationInterface';
 import { EmailVerficationRepository } from './repos/emailVerfication.repo';
 import { IPasswordHasherToken, PasswordHasher } from './utils/bcrypt';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   controllers: [AuthController, ],
@@ -22,6 +24,8 @@ import { IPasswordHasherToken, PasswordHasher } from './utils/bcrypt';
     {provide:IEmailVerificationToken, useClass:EmailVerficationRepository},
   {provide:IPasswordHasherToken , useClass:PasswordHasher}],
   imports: [
+    ConfigModule,
+    MailerModule,
     TypeOrmModule.forFeature([UserEntity,RefreshToken , EmailVerification]),
     UserModule,
     PassportModule,

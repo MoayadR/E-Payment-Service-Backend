@@ -7,14 +7,22 @@ import { UserEntity } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { RefreshToken } from './auth/entities/refreshToken.entity';
 import { EmailVerification } from './auth/entities/emailVerfication.entity';
+import { ConfigModule } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forRoot({
+  imports: [
+    MailerModule,
+    ConfigModule.forRoot()
+    ,UserModule
+    ,TypeOrmModule.forRoot({
     type:"sqlite",
     database:`${__dirname}/../database/e-payment.db`,
     entities:[UserEntity, RefreshToken , EmailVerification],
     synchronize:true,
-  }), AuthModule],
+  }), 
+  AuthModule
+],
   controllers: [AppController, ],
   providers: [AppService, ],
 })

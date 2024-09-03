@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import { refreshTokenDto } from 'src/auth/dto/refreshToken.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
@@ -23,8 +23,10 @@ export class AuthController {
        const user = await this.authService.createUser(payload);
 
        // make auth service create email verification
+       const emailVerification = await this.authService.createEmailVerification(user);
 
        // make auth service send email verification
+       this.authService.sendVerficationEmail(user.email , emailVerification.verificationToken);
 
        return user; 
     }
@@ -82,4 +84,13 @@ export class AuthController {
     async status(@Req() req:Request){
         return req.user;
     } 
+
+    @Get('verify/:verificationToken')
+    async verifyUser(@Param('verificationToken')verificationToken:string){
+       const token = await this.authService.getEmailVerificationWithToken(verificationToken); 
+       if (!token) throw new UnauthorizedException("Invalid Verfication link");
+
+        token.user.isActive = true;
+        return this.authService.updateUser(token.user); 
+    }
 }

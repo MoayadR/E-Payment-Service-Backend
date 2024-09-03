@@ -9,6 +9,9 @@ export class UserRepository implements IUserRepository{
         @InjectRepository(UserEntity)
         private readonly userRepository:Repository<UserEntity>
     ){}
+    async update(user: UserEntity): Promise<UserEntity> {
+        return await this.userRepository.save(user);
+    }
 
     async findOneUsername(username:string): Promise<UserEntity> {
         return await this.userRepository.findOne({where:{'username':username}});
