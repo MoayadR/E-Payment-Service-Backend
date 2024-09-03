@@ -1,10 +1,15 @@
 import * as bcrypt from "bcrypt";
+import { IPasswordHasher } from "../interfaces/passwordHasher.interface";
 
-export function hashPassword(rawPassword:string):string{
+export const IPasswordHasherToken = Symbol("IPasswordHasher");
+export class PasswordHasher implements IPasswordHasher{
+
+    hashPassword(rawPassword:string):string{
     const SALT = bcrypt.genSaltSync();
     return bcrypt.hashSync(rawPassword , SALT);
-}
+    }
 
-export function comparePasswords(rawPassword:string , hash:string):boolean{
-    return bcrypt.compareSync(rawPassword , hash);
+    comparePasswords(rawPassword:string , hash:string):boolean{
+        return bcrypt.compareSync(rawPassword , hash);
+    }
 }

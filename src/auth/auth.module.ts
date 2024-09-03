@@ -11,12 +11,18 @@ import { RefreshTokenRepository } from './repos/refreshToken.repo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refreshToken.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { EmailVerification } from './entities/emailVerfication.entity';
+import { IEmailVerificationToken } from './interfaces/emailVerficationInterface';
+import { EmailVerficationRepository } from './repos/emailVerfication.repo';
+import { IPasswordHasherToken, PasswordHasher } from './utils/bcrypt';
 
 @Module({
   controllers: [AuthController, ],
-  providers: [AuthService , LocalStrategy , JwtStrategy , {provide:IRefreshTokenSymbol, useClass:RefreshTokenRepository}],
+  providers: [AuthService , LocalStrategy , JwtStrategy , {provide:IRefreshTokenSymbol, useClass:RefreshTokenRepository} , 
+    {provide:IEmailVerificationToken, useClass:EmailVerficationRepository},
+  {provide:IPasswordHasherToken , useClass:PasswordHasher}],
   imports: [
-    TypeOrmModule.forFeature([UserEntity,RefreshToken]),
+    TypeOrmModule.forFeature([UserEntity,RefreshToken , EmailVerification]),
     UserModule,
     PassportModule,
     JwtModule.register({

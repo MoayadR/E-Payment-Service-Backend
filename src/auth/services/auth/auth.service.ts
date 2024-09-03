@@ -3,14 +3,20 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from 'src/auth/dto/loginUser.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
 import { RefreshToken } from 'src/auth/entities/refreshToken.entity';
+import { IPasswordHasher } from 'src/auth/interfaces/passwordHasher.interface';
 import { IRefreshTokenRepository, IRefreshTokenSymbol } from 'src/auth/interfaces/refreshToken.interface';
-import { comparePasswords, hashPassword } from 'src/auth/utils/bcrypt';
+import { IPasswordHasherToken } from 'src/auth/utils/bcrypt';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private jwtService:JwtService, private userService:UserService , @Inject(IRefreshTokenSymbol) private refreshTokenRepo:IRefreshTokenRepository ){}
+    constructor(
+        private jwtService:JwtService,
+        private userService:UserService ,
+        @Inject(IRefreshTokenSymbol) private refreshTokenRepo:IRefreshTokenRepository,
+        @Inject(IPasswordHasherToken) private passwordHasher:IPasswordHasher, 
+        ){}
 
     async isValidRegisterEmail(email:string):Promise<boolean>{
         if (await this.userService.userExistEmail(email)){
@@ -31,14 +37,14 @@ export class AuthService {
         if (!user)
             return null;
 
-        if ( comparePasswords(payload.password , user.password))
+        if ( this.passwordHasher.comparePasswords(payload.password , user.password))
             return user
 
         return null;
     }
 
     async createUser(payload:RegisterUserDto){
-       const password = hashPassword(payload.password);
+       const password = this.passwordHasher.hashPassword(payload.password);
        return await this.userService.createUser({...payload , password}); 
     }
 

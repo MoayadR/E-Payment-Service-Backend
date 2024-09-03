@@ -20,7 +20,13 @@ export class AuthController {
        if(!await this.authService.isValidRegisterUsername(payload.username))
             throw new HttpException("The Username Already Exist!" , HttpStatus.BAD_REQUEST);
 
-       return this.authService.createUser(payload);
+       const user = await this.authService.createUser(payload);
+
+       // make auth service create email verification
+
+       // make auth service send email verification
+
+       return user; 
     }
 
     @Post('login')
