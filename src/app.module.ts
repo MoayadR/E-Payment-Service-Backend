@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { RefreshToken } from './auth/entities/refreshToken.entity';
-import { EmailVerification } from './auth/entities/emailVerfication.entity';
+import { EmailVerification } from './email/entities/emailVerfication.entity';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     entities:[UserEntity, RefreshToken , EmailVerification],
     synchronize:true,
   }), 
-  AuthModule
+  AuthModule, EmailModule
 ],
   controllers: [AppController, ],
   providers: [AppService, ],

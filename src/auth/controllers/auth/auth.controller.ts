@@ -5,11 +5,15 @@ import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { LocalGuard } from 'src/auth/guards/local.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
+import { EmailService } from 'src/email/services/email.service';
 import { UserEntity } from 'src/user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService:AuthService ){}
+    constructor(
+        private readonly authService:AuthService,
+        private readonly emailService:EmailService 
+    ){}
 
     @Post('register')
     @UsePipes(ValidationPipe)
@@ -23,10 +27,10 @@ export class AuthController {
        const user = await this.authService.createUser(payload);
 
        // make auth service create email verification
-       const emailVerification = await this.authService.createEmailVerification(user);
+       const emailVerification = await this.emailService.createEmailVerification(user);
 
        // make auth service send email verification
-       this.authService.sendVerficationEmail(user.email , emailVerification.verificationToken);
+       this.emailService.sendVerficationEmail(user.email , emailVerification.verificationToken);
 
        return user; 
     }
@@ -87,10 +91,10 @@ export class AuthController {
 
     @Get('verify/:verificationToken')
     async verifyUser(@Param('verificationToken')verificationToken:string){
-       const emailVerification = await this.authService.getEmailVerificationWithToken(verificationToken); 
+       const emailVerification = await this.emailService.getEmailVerificationWithToken(verificationToken); 
        if (!emailVerification) throw new UnauthorizedException("Invalid Verfication link");
 
-        this.authService.deleteEmailVerification(emailVerification);
+        this.emailService.deleteEmailVerification(emailVerification);
         emailVerification.user.isActive = true;
         return this.authService.updateUser(emailVerification.user); 
     }

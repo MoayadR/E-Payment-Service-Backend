@@ -11,28 +11,22 @@ import { RefreshTokenRepository } from './repos/refreshToken.repo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refreshToken.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { EmailVerification } from './entities/emailVerfication.entity';
-import { IEmailVerificationToken } from './interfaces/emailVerficationInterface';
-import { EmailVerficationRepository } from './repos/emailVerfication.repo';
 import { IPasswordHasherToken, PasswordHasher } from './utils/bcrypt';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigModule } from '@nestjs/config';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   controllers: [AuthController, ],
-  providers: [AuthService , LocalStrategy , JwtStrategy , {provide:IRefreshTokenSymbol, useClass:RefreshTokenRepository} , 
-    {provide:IEmailVerificationToken, useClass:EmailVerficationRepository},
+  providers: [AuthService , LocalStrategy , JwtStrategy , {provide:IRefreshTokenSymbol, useClass:RefreshTokenRepository},
   {provide:IPasswordHasherToken , useClass:PasswordHasher}],
   imports: [
-    ConfigModule,
-    MailerModule,
-    TypeOrmModule.forFeature([UserEntity,RefreshToken , EmailVerification]),
+    TypeOrmModule.forFeature([UserEntity,RefreshToken]),
     UserModule,
     PassportModule,
     JwtModule.register({
       secret:"SECRET_KEY_FOR_JWT",
       signOptions:{expiresIn:"2h"}
   }),
+  EmailModule,
 ],
 })
 export class AuthModule {}

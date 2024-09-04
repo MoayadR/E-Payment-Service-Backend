@@ -17,9 +17,6 @@ export class EmailVerficationRepository implements IEmailVerificationRepository{
         return await this.emailVerficationRepository.save(createdUser);
     }
 
-    async findOneByUser(user: UserEntity): Promise<EmailVerification> {
-        return await this.emailVerficationRepository.findOne({where:{user:user}});
-    }
     async findOneByToken(token: string): Promise<EmailVerification> {
         return await this.emailVerficationRepository.findOne({where:{verificationToken:token} , relations:['user']});
     }
