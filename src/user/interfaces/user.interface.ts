@@ -8,6 +8,7 @@ export interface IUserRepository{
 
     find():Promise<UserEntity[]>
     findOneUsername(username:string):Promise<UserEntity>
+    findOneID(id:number):Promise<UserEntity>
 
     userExistUsername(username:string):Promise<boolean>
     userExistEmail(email:string):Promise<boolean>

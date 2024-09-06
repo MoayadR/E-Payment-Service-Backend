@@ -21,6 +21,10 @@ export class UserService {
     async getUserByUsername(username:string){
         return await this.userRepository.findOneUsername(username);
     }
+
+    async getUserByID(id:number){
+        return await this.userRepository.findOneID(id);
+    }
     
     async createUser(user:RegisterUserDto):Promise<UserEntity>{
         return this.userRepository.createUser(user);

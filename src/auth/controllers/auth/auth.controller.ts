@@ -1,15 +1,13 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { Request } from 'express';
-import { Roles } from 'src/auth/decorators/roles.decorator';
 import { refreshTokenDto } from 'src/auth/dto/refreshToken.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
 import { ActiveUserGuard } from 'src/auth/guards/activeUser.guard';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { LocalGuard } from 'src/auth/guards/local.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
 import { EmailService } from 'src/email/services/email.service';
-import { UserEntity, UserType } from 'src/user/entities/user.entity';
+import { UserEntity} from 'src/user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +17,6 @@ export class AuthController {
     ){}
 
     @Post('register')
-    @UsePipes(ValidationPipe)
     async register(@Body() payload:RegisterUserDto):Promise<any>{
 
        if(!await this.authService.isValidRegisterEmail(payload.email))
@@ -39,7 +36,6 @@ export class AuthController {
     }
 
     @Post('login')
-    @UsePipes(ValidationPipe)
     @UseGuards(ActiveUserGuard)
     @UseGuards(LocalGuard)
     async login(@Req() req:Request){
@@ -88,8 +84,6 @@ export class AuthController {
     }
 
     @Get('status')
-    @Roles(UserType.user , UserType.admin)
-    @UseGuards(RolesGuard)
     @UseGuards(JwtGuard)
     async status(@Req() req:Request){
         return req.user;
