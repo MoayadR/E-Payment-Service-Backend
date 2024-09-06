@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, Una
 import { Request } from 'express';
 import { refreshTokenDto } from 'src/auth/dto/refreshToken.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
+import { ActiveUserGuard } from 'src/auth/guards/activeUser.guard';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { LocalGuard } from 'src/auth/guards/local.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
@@ -37,6 +38,7 @@ export class AuthController {
 
     @Post('login')
     @UsePipes(ValidationPipe)
+    @UseGuards(ActiveUserGuard)
     @UseGuards(LocalGuard)
     async login(@Req() req:Request){
         const jwt =  await this.authService.signJwtUser((req.user as UserEntity));
