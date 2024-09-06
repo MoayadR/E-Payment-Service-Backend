@@ -23,7 +23,7 @@ export class UserService {
     }
     
     async createUser(user:RegisterUserDto):Promise<UserEntity>{
-        return this.userRepository.create(user);
+        return this.userRepository.createUser(user);
     }
 
     getUsers():Promise<UserEntity[]>{

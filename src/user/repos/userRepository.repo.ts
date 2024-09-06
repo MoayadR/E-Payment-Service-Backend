@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { RegisterUserDto } from "../../auth/dto/registerUser.dto";
-import { UserEntity } from "../entities/user.entity";
+import { UserEntity, UserType } from "../entities/user.entity";
 import { IUserRepository } from "../interfaces/user.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -24,8 +24,8 @@ export class UserRepository implements IUserRepository{
         return false;
     }
 
-    async create(user: RegisterUserDto): Promise<UserEntity> {
-        const createdUser = this.userRepository.create(user);
+    async createUser(user: RegisterUserDto): Promise<UserEntity> {
+        const createdUser = this.userRepository.create({...user , isActive:false , userType:UserType.user});
         return await this.userRepository.save(createdUser);
     }
 

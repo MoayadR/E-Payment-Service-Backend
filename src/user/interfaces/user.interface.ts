@@ -4,7 +4,7 @@ import { UserEntity } from "../entities/user.entity";
 export const IUserRepositoryToken = Symbol("IUserRepository")
 export interface IUserRepository{
 
-    create(user:RegisterUserDto):Promise<UserEntity>
+    createUser(user:RegisterUserDto):Promise<UserEntity>
 
     find():Promise<UserEntity[]>
     findOneUsername(username:string):Promise<UserEntity>

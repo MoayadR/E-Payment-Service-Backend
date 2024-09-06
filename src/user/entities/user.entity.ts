@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-enum userTypes {
+export enum UserType{
   user,
   admin,
 }
@@ -34,10 +34,10 @@ export class UserEntity {
 
   @Column({
     nullable: false,
-    enum: userTypes,
-    default: userTypes.user,
+    enum: UserType,
+    default: UserType.user,
   })
-  userType: userTypes;
+  userType: UserType;
 
   @Column({
     default: 0.0,
