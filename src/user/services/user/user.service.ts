@@ -37,4 +37,9 @@ export class UserService {
     async updateUser(user:UserEntity){
         await this.userRepository.update(user);
     }
+
+    async createAdmin(user:RegisterUserDto):Promise<UserEntity>
+    {
+        return this.userRepository.createAdmin(user);
+    }
 }

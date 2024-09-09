@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CreditCardDto } from 'src/creditcard/dtos/creditcard.dto';
@@ -37,7 +37,7 @@ export class CreditcardController {
         return await this.creditCardService.createCreditCard(user , creditCardDto);
     }
 
-    @Post('charge/:id')
+    @Put('charge/:id')
     @UseGuards(JwtGuard)
     async chargeCreditCard(@Req() req:Request ,@Param("id" , ParseIntPipe) id:number, @Body() chargeDto){
         if (chargeDto.amount < 0)
@@ -55,7 +55,7 @@ export class CreditcardController {
         return await this.creditCardService.updateCreditCard(card);
     }
 
-    @Post('delete/:id')
+    @Delete('delete/:id')
     @UseGuards(JwtGuard)
     async deleteCreditCard(@Req() req:Request , @Param("id" , ParseIntPipe) id:number){
         const userReq:UserEntity = req.user as UserEntity;

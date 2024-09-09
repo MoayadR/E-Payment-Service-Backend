@@ -10,6 +10,11 @@ export class UserRepository implements IUserRepository{
         private readonly userRepository:Repository<UserEntity>
     ){}
 
+    createAdmin(user: RegisterUserDto): Promise<UserEntity> {
+        const createdAdmin = this.userRepository.create({...user , isActive:true , userType:UserType.admin});
+        return this.userRepository.save(createdAdmin);
+    }
+
     async findOneID(id: number): Promise<UserEntity> {
         return await this.userRepository.findOne({where:{'id':id}});
     }

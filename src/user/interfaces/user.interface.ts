@@ -5,6 +5,7 @@ export const IUserRepositoryToken = Symbol("IUserRepository")
 export interface IUserRepository{
 
     createUser(user:RegisterUserDto):Promise<UserEntity>
+    createAdmin(user:RegisterUserDto):Promise<UserEntity>
 
     find():Promise<UserEntity[]>
     findOneUsername(username:string):Promise<UserEntity>

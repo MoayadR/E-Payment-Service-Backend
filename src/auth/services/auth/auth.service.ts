@@ -48,6 +48,11 @@ export class AuthService {
        return await this.userService.createUser({...payload , password}); 
     }
 
+    async createAdmin(payload:RegisterUserDto){
+       const password = this.passwordHasher.hashPassword(payload.password);
+        return this.userService.createAdmin({...payload , password});
+    }
+
     async updateUser(user:UserEntity){
         await this.userService.updateUser(user);
     }

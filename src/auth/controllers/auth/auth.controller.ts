@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { Request } from 'express';
 import { refreshTokenDto } from 'src/auth/dto/refreshToken.dto';
 import { RegisterUserDto } from 'src/auth/dto/registerUser.dto';
@@ -35,6 +35,19 @@ export class AuthController {
        return user; 
     }
 
+    @Post('admin')
+    async registerAdmin(@Body() payload:RegisterUserDto):Promise<any>{
+
+       if(!await this.authService.isValidRegisterEmail(payload.email))
+            throw new HttpException("The Email Already Exist!" , HttpStatus.BAD_REQUEST);
+       if(!await this.authService.isValidRegisterUsername(payload.username))
+            throw new HttpException("The Username Already Exist!" , HttpStatus.BAD_REQUEST);
+
+       const user = await this.authService.createAdmin(payload);
+    
+       return user; 
+    }
+
     @Post('login')
     @UseGuards(ActiveUserGuard)
     @UseGuards(LocalGuard)
@@ -64,7 +77,7 @@ export class AuthController {
         };
     }
 
-    @Post('refresh')
+    @Put('refresh')
     async refreshRefreshToken(@Body() payload:refreshTokenDto){
         const token = await this.authService.getRefreshTokenByToken(payload.refreshToken); 
 

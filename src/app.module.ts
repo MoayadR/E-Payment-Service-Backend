@@ -12,6 +12,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
 import { CreditcardModule } from './creditcard/creditcard.module';
 import { CreditCard } from './creditcard/entities/creditcard.entity';
+import { ServiceproviderModule } from './serviceprovider/serviceprovider.module';
+import { ServiceProvider } from './serviceprovider/entities/serviceprovider.entity';
 
 @Module({
   imports: [
@@ -21,10 +23,10 @@ import { CreditCard } from './creditcard/entities/creditcard.entity';
     ,TypeOrmModule.forRoot({
     type:"sqlite",
     database:`${__dirname}/../database/e-payment.db`,
-    entities:[UserEntity, RefreshToken , EmailVerification , CreditCard],
+    entities:[UserEntity, RefreshToken , EmailVerification , CreditCard , ServiceProvider],
     synchronize:true,
   }), 
-  AuthModule, EmailModule, CreditcardModule
+  AuthModule, EmailModule, CreditcardModule, ServiceproviderModule
 ],
   controllers: [AppController, ],
   providers: [AppService, ],
