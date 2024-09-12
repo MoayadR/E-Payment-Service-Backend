@@ -11,6 +11,7 @@ export interface ICreditCardRepository{
 
     update(creditCard:CreditCard):Promise<CreditCard>
 
+    findAll():Promise<CreditCard[]>
     find(user:UserEntity):Promise<CreditCard[]>
     findOneById(id:number):Promise<CreditCard>
 }

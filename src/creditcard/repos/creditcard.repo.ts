@@ -10,6 +10,10 @@ export class CreditCardRepository implements ICreditCardRepository{
         @InjectRepository(CreditCard) private readonly creditCardRepo:Repository<CreditCard>
     ){}
 
+    findAll(): Promise<CreditCard[]> {
+        return this.creditCardRepo.find({relations:['user']});
+    }
+
     async create(user: UserEntity, creditCard: CreditCardDto): Promise<CreditCard> {
         const creditCardObj = this.creditCardRepo.create(creditCard);
         creditCardObj.user = user;

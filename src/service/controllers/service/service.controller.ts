@@ -1,17 +1,24 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
+import { Request } from 'express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { CreditcardService } from 'src/creditcard/services/creditcard/creditcard.service';
+import { PaymentDto } from 'src/service/dtos/payment.dto';
 import { CreateServiceDto } from 'src/service/dtos/service.dto';
+import { ValidatorFactory } from 'src/service/factories/validator.factory';
 import { ServiceService } from 'src/service/services/service/service.service';
 import { ServiceProviderService } from 'src/serviceprovider/services/serviceprovider/serviceprovider.service';
-import { UserType } from 'src/user/entities/user.entity';
+import { UserEntity, UserType } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/services/user/user.service';
 
 @Controller('service')
 export class ServiceController {
     constructor(
         private readonly serviceService:ServiceService,
         private readonly serviceProviderService:ServiceProviderService,
+        private readonly userService:UserService,
+        private readonly creditCardService:CreditcardService,
     ){}
 
     @Post('')
@@ -26,8 +33,6 @@ export class ServiceController {
     }
 
     @Get('')
-    @Roles(UserType.admin)
-    @UseGuards(RolesGuard)
     @UseGuards(JwtGuard)
     async getServices(){
         return await this.serviceService.find();
@@ -43,10 +48,43 @@ export class ServiceController {
     }
 
     @Get(':code')
-    @Roles(UserType.admin)
-    @UseGuards(RolesGuard)
     @UseGuards(JwtGuard)
     async getServiceByCode(@Param("code") code:string){
         return await this.serviceService.findOneByCode(code);
+    }
+
+    @Post('pay/:id?')
+    @UseGuards(JwtGuard)
+    async pay(@Param("id" , ParseIntPipe) id:number ,@Body() paymentDto:PaymentDto , @Query('wallet') wallet:boolean ,@Query('creditcard') creditID:number ,  @Req() req:Request){
+        const userReq = req.user as UserEntity;
+        const user = await this.userService.getUserByID(userReq.id);
+
+        const service = await this.serviceService.findOneById(id);
+        const validator = ValidatorFactory.validatorFactory(service.serviceType);  
+
+        if (!validator.isValid(paymentDto))
+            throw new BadRequestException("The Body Data is Invalid");
+
+         
+        if (wallet === true)
+        {
+            console.log(wallet);
+            const status = this.serviceService.payWithWallet(user , paymentDto.amount);
+            if(!status) throw new BadRequestException("Insufficent Wallet Balance!");
+
+            await this.userService.updateUser(user);
+            return user.walletBalance;
+        }
+        
+        const creditCard = await this.creditCardService.findOneById(creditID);
+
+        if (!this.creditCardService.belongs(creditCard , user)) throw new UnauthorizedException();
+
+        const status = this.serviceService.payWithCreditCard(creditCard , paymentDto.amount);
+        if(!status) throw new BadRequestException("Insufficent Wallet Balance!");
+
+        await this.creditCardService.updateCreditCard(creditCard);
+
+        return creditCard.balance;
     }
 }

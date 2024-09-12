@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CreditcardService } from './services/creditcard/creditcard.service';
+import { CreditcardService as CreditCardService } from './services/creditcard/creditcard.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreditCard } from './entities/creditcard.entity';
 import { ICreditCardToken } from './interfaces/credticard.interface';
@@ -10,9 +10,9 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports:[TypeOrmModule.forFeature([CreditCard]) , UserModule],
   controllers: [CreditcardController],
-  providers: [CreditcardService ,
+  providers: [CreditCardService ,
     {provide:ICreditCardToken , useClass:CreditCardRepository},
     ],
-    exports:[]
+    exports:[CreditCardService]
 })
 export class CreditcardModule {}

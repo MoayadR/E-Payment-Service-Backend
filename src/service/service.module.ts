@@ -6,6 +6,8 @@ import { Service } from './entities/service.entity';
 import { IServiceToken } from './interfaces/service.interface';
 import { ServiceRepository } from './repos/service.repo';
 import { ServiceproviderModule } from 'src/serviceprovider/serviceprovider.module';
+import { UserModule } from 'src/user/user.module';
+import { CreditcardModule } from 'src/creditcard/creditcard.module';
 
 @Module({
   controllers: [ServiceController],
@@ -16,6 +18,8 @@ import { ServiceproviderModule } from 'src/serviceprovider/serviceprovider.modul
   imports:[
     TypeOrmModule.forFeature([Service]),
     ServiceproviderModule,
+    UserModule,
+    CreditcardModule,
 ],
 })
 export class ServiceModule {}

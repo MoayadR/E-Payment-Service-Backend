@@ -1,9 +1,11 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { Request } from 'express';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { CreditCardDto } from 'src/creditcard/dtos/creditcard.dto';
 import { CreditcardService } from 'src/creditcard/services/creditcard/creditcard.service';
-import { UserEntity} from 'src/user/entities/user.entity';
+import { UserEntity, UserType} from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
 
 @Controller('creditcard')
@@ -13,7 +15,15 @@ export class CreditcardController {
         private readonly userService:UserService,
     ){}
 
-    @Get()
+    @Get('')
+    @Roles(UserType.admin)
+    @UseGuards(RolesGuard)
+    @UseGuards(JwtGuard)
+    async getCreditCards(){
+        return await this.creditCardService.findAll();
+    }
+
+    @Get('user')
     @UseGuards(JwtGuard)
     async getCreditCardForUser(@Req() req:Request){
         const userReq:UserEntity = req.user as UserEntity;

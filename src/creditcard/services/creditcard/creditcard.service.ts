@@ -33,4 +33,8 @@ export class CreditcardService {
     belongs(creditCard:CreditCard , user:UserEntity){
         return creditCard.user.id === user.id;
     }
+
+    async findAll(){
+        return this.creditCardRepository.findAll();
+    }
 }

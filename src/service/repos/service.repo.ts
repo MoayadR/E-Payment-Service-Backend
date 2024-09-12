@@ -22,14 +22,14 @@ export class ServiceRepository implements IServiceRepository{
     }
 
     findOneById(id: number): Promise<Service> {
-        return this.serviceRepo.findOne({where:{id:id}});
+        return this.serviceRepo.findOne({where:{id:id} , relations:['serviceProvider']});
     }
 
     findOneByCode(code: string): Promise<Service> {
-        return this.serviceRepo.findOne({where:{code:code}});
+        return this.serviceRepo.findOne({where:{code:code} , relations:['serviceProvider']});
     }
 
     find(): Promise<Service[]> {
-        return this.serviceRepo.find();
+        return this.serviceRepo.find({relations:['serviceProvider']});
     }
 }
