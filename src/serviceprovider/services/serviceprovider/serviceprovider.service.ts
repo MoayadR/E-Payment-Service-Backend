@@ -4,7 +4,7 @@ import { ServiceProvider } from 'src/serviceprovider/entities/serviceprovider.en
 import { IServiceProviderRepository, IServiceProviderToken } from 'src/serviceprovider/interfaces/serviceprovider.interface';
 
 @Injectable()
-export class ServiceproviderService {
+export class ServiceProviderService {
     constructor(
         @Inject(IServiceProviderToken) private readonly serviceProviderRepo:IServiceProviderRepository
     ){}

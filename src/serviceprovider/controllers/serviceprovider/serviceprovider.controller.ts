@@ -3,13 +3,13 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { ServiceProviderDto } from 'src/serviceprovider/dtos/serviceprovider.dto';
-import { ServiceproviderService } from 'src/serviceprovider/services/serviceprovider/serviceprovider.service';
+import { ServiceProviderService } from 'src/serviceprovider/services/serviceprovider/serviceprovider.service';
 import { UserType } from 'src/user/entities/user.entity';
 
 @Controller('serviceprovider')
 export class ServiceproviderController {
     constructor(
-        private readonly serviceProviderService:ServiceproviderService
+        private readonly serviceProviderService:ServiceProviderService
     ){}
 
     @Post()

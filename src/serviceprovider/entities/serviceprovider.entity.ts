@@ -7,4 +7,5 @@ export class ServiceProvider {
 
     @Column({nullable:false})
     name:string
+
 }
