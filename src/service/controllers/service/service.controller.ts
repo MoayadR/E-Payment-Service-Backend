@@ -41,4 +41,12 @@ export class ServiceController {
         const service = await this.serviceService.findOneById(id);
         return await this.serviceService.delete(service);
     }
+
+    @Get(':code')
+    @Roles(UserType.admin)
+    @UseGuards(RolesGuard)
+    @UseGuards(JwtGuard)
+    async getServiceByCode(@Param("code") code:string){
+        return await this.serviceService.findOneByCode(code);
+    }
 }
