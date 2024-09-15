@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Service } from 'src/service/entities/service.entity';
-import { Transaction } from 'src/transaction/entities/transaction.entity';
+import { Transaction, TransactionType } from 'src/transaction/entities/transaction.entity';
 import { ITransactionRepo, ITransactionToken } from 'src/transaction/interfaces/transaction.interface';
 import { UserEntity } from 'src/user/entities/user.entity';
 
@@ -10,8 +10,8 @@ export class TransactionService {
         @Inject(ITransactionToken) private readonly transactionRepository:ITransactionRepo
     ){}
 
-    create(paymentService:Service , user:UserEntity , price:number){
-        return this.transactionRepository.create(paymentService , user , price);
+    create(paymentService:Service , user:UserEntity , price:number , transactionType:TransactionType){
+        return this.transactionRepository.create(paymentService , user , price , transactionType);
     }
 
     delete(transaction:Transaction){

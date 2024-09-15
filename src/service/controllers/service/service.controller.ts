@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Req, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { Request } from 'express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -9,6 +9,7 @@ import { CreateServiceDto } from 'src/service/dtos/service.dto';
 import { ValidatorFactory } from 'src/service/factories/validator.factory';
 import { ServiceService } from 'src/service/services/service/service.service';
 import { ServiceProviderService } from 'src/serviceprovider/services/serviceprovider/serviceprovider.service';
+import { TransactionType } from 'src/transaction/entities/transaction.entity';
 import { TransactionService } from 'src/transaction/services/transaction/transaction.service';
 import { UserEntity, UserType } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
@@ -57,7 +58,7 @@ export class ServiceController {
 
     @Post('pay/:id?')
     @UseGuards(JwtGuard)
-    async pay(@Param("id" , ParseIntPipe) id:number ,@Body() paymentDto:PaymentDto , @Query('wallet') wallet:boolean ,@Query('creditcard') creditID:number ,  @Req() req:Request){
+    async pay(@Param("id" , ParseIntPipe) id:number ,@Body() paymentDto:PaymentDto , @Query('wallet' , ParseBoolPipe) wallet:boolean ,@Req() req:Request ,@Query('creditcard') creditID?:number){
         const userReq = req.user as UserEntity;
         const user = await this.userService.getUserByID(userReq.id);
 
@@ -68,15 +69,15 @@ export class ServiceController {
             throw new BadRequestException("The Body Data is Invalid");
 
          
+        
         if (wallet === true)
         {
-            console.log(wallet);
             const status = this.serviceService.payWithWallet(user , paymentDto.amount);
             if(!status) throw new BadRequestException("Insufficent Wallet Balance!");
 
             await this.userService.updateUser(user);
 
-            const transaction = await this.transactionService.create(service , user , paymentDto.amount);
+            const transaction = await this.transactionService.create(service , user , paymentDto.amount , TransactionType.wallet);
             delete transaction.user;
             return transaction;
         }
@@ -90,7 +91,7 @@ export class ServiceController {
 
         await this.creditCardService.updateCreditCard(creditCard);
 
-        const transaction = await this.transactionService.create(service , user , paymentDto.amount);
+        const transaction = await this.transactionService.create(service , user , paymentDto.amount , TransactionType.creditCard);
         delete transaction.user;
         return transaction;
     }

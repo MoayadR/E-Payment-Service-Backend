@@ -2,6 +2,12 @@ import { Service } from "src/service/entities/service.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+export enum TransactionType{
+    creditCard,
+    wallet,
+    refund
+}
+
 @Entity()
 export class Transaction{
     @PrimaryGeneratedColumn()
@@ -9,6 +15,9 @@ export class Transaction{
 
     @Column({nullable:false})
     price:number
+
+    @Column({enum:TransactionType})
+    transactionType: TransactionType
 
     @ManyToOne(()=>Service)
     @JoinColumn()
@@ -18,5 +27,4 @@ export class Transaction{
     @JoinColumn()
     user:UserEntity
 
-    // one to one with refundRequest
 }

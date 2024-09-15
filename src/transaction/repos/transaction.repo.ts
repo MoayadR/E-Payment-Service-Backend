@@ -3,7 +3,7 @@ import { UserEntity } from "src/user/entities/user.entity";
 import {  DeleteResult, Repository } from "typeorm";
 import { ITransactionRepo } from "../interfaces/transaction.interface";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Transaction } from "../entities/transaction.entity";
+import { Transaction, TransactionType } from "../entities/transaction.entity";
 
 export class TransactionRepository implements ITransactionRepo{
     constructor(
@@ -11,19 +11,20 @@ export class TransactionRepository implements ITransactionRepo{
     ){}
 
     findOneById(id: number): Promise<Transaction> {
-        return this.transactionRepo.findOne({where:{id:id}});
+        return this.transactionRepo.findOne({where:{id:id} , relations:['user','service']});
     }
 
     update(transaction: any): Promise<Transaction> {
         return this.transactionRepo.save(transaction);
     }
 
-    create(paymentService: Service, user: UserEntity , price:number): Promise<Transaction> {
+    create(paymentService: Service, user: UserEntity , price:number , transactionType:TransactionType): Promise<Transaction> {
         const transaction = this.transactionRepo.create();
 
         transaction.price = price;
         transaction.service = paymentService;
         transaction.user = user;
+        transaction.transactionType = transactionType;
 
         return this.transactionRepo.save(transaction);
     }
