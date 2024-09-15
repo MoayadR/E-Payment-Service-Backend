@@ -8,6 +8,7 @@ import { ServiceRepository } from './repos/service.repo';
 import { ServiceproviderModule } from 'src/serviceprovider/serviceprovider.module';
 import { UserModule } from 'src/user/user.module';
 import { CreditcardModule } from 'src/creditcard/creditcard.module';
+import { TransactionModule } from 'src/transaction/transaction.module';
 
 @Module({
   controllers: [ServiceController],
@@ -20,6 +21,7 @@ import { CreditcardModule } from 'src/creditcard/creditcard.module';
     ServiceproviderModule,
     UserModule,
     CreditcardModule,
+    TransactionModule,
 ],
 })
 export class ServiceModule {}

@@ -16,6 +16,8 @@ import { ServiceproviderModule } from './serviceprovider/serviceprovider.module'
 import { ServiceProvider } from './serviceprovider/entities/serviceprovider.entity';
 import { ServiceModule } from './service/service.module';
 import { Service } from './service/entities/service.entity';
+import { TransactionModule } from './transaction/transaction.module';
+import { Transaction } from './transaction/entities/transaction.entity';
 
 @Module({
   imports: [
@@ -25,10 +27,10 @@ import { Service } from './service/entities/service.entity';
     ,TypeOrmModule.forRoot({
     type:"sqlite",
     database:`${__dirname}/../database/e-payment.db`,
-    entities:[UserEntity, RefreshToken , EmailVerification , CreditCard , ServiceProvider , Service],
+    entities:[UserEntity, RefreshToken , EmailVerification , CreditCard , ServiceProvider , Service , Transaction],
     synchronize:true,
   }), 
-  AuthModule, EmailModule, CreditcardModule, ServiceproviderModule, ServiceModule
+  AuthModule, EmailModule, CreditcardModule, ServiceproviderModule, ServiceModule, TransactionModule
 ],
   controllers: [AppController, ],
   providers: [AppService, ],

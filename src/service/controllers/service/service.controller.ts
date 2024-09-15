@@ -9,6 +9,7 @@ import { CreateServiceDto } from 'src/service/dtos/service.dto';
 import { ValidatorFactory } from 'src/service/factories/validator.factory';
 import { ServiceService } from 'src/service/services/service/service.service';
 import { ServiceProviderService } from 'src/serviceprovider/services/serviceprovider/serviceprovider.service';
+import { TransactionService } from 'src/transaction/services/transaction/transaction.service';
 import { UserEntity, UserType } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
 
@@ -19,6 +20,7 @@ export class ServiceController {
         private readonly serviceProviderService:ServiceProviderService,
         private readonly userService:UserService,
         private readonly creditCardService:CreditcardService,
+        private readonly transactionService:TransactionService,
     ){}
 
     @Post('')
@@ -73,7 +75,10 @@ export class ServiceController {
             if(!status) throw new BadRequestException("Insufficent Wallet Balance!");
 
             await this.userService.updateUser(user);
-            return user.walletBalance;
+
+            const transaction = await this.transactionService.create(service , user , paymentDto.amount);
+            delete transaction.user;
+            return transaction;
         }
         
         const creditCard = await this.creditCardService.findOneById(creditID);
@@ -85,6 +90,8 @@ export class ServiceController {
 
         await this.creditCardService.updateCreditCard(creditCard);
 
-        return creditCard.balance;
+        const transaction = await this.transactionService.create(service , user , paymentDto.amount);
+        delete transaction.user;
+        return transaction;
     }
 }
