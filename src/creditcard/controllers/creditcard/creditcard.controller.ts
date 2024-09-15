@@ -8,7 +8,7 @@ import { CreditcardService } from 'src/creditcard/services/creditcard/creditcard
 import { UserEntity, UserType} from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
 
-@Controller('creditcard')
+@Controller('creditcards')
 export class CreditcardController {
     constructor(
         private readonly creditCardService:CreditcardService,

@@ -6,7 +6,7 @@ import { ServiceProviderDto } from 'src/serviceprovider/dtos/serviceprovider.dto
 import { ServiceProviderService } from 'src/serviceprovider/services/serviceprovider/serviceprovider.service';
 import { UserType } from 'src/user/entities/user.entity';
 
-@Controller('serviceprovider')
+@Controller('serviceproviders')
 export class ServiceproviderController {
     constructor(
         private readonly serviceProviderService:ServiceProviderService

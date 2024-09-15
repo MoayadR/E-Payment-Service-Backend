@@ -13,7 +13,7 @@ import { TransactionService } from 'src/transaction/services/transaction/transac
 import { UserEntity, UserType } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user/user.service';
 
-@Controller('service')
+@Controller('services')
 export class ServiceController {
     constructor(
         private readonly serviceService:ServiceService,
