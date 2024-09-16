@@ -1,4 +1,4 @@
-export const verifyEndpoint = "http://localhost:3000/auth/verify"
+export const verifyEndpoint = "http://localhost:3000/v1/auth/verify"
 
 export function generateEmailHTML(verificationLink:string){
     const emailHTML = `<!DOCTYPE html>
