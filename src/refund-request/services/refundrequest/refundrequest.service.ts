@@ -17,6 +17,10 @@ export class RefundRequestService {
         return this.refundRequestRepository.find();
     }
 
+    findOneById(id:number){
+        return this.refundRequestRepository.findOneById(id);
+    }
+
     delete(refundRequest:RefundRequest){
         return this.refundRequestRepository.delete(refundRequest);
     }
@@ -24,4 +28,5 @@ export class RefundRequestService {
     findOneByTransaction(transaction:Transaction){
         return this.refundRequestRepository.findOneByTransaction(transaction);
     }
+
 }

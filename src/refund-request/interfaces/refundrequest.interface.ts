@@ -11,6 +11,7 @@ export interface IRefundRequest{
     delete(refundRequest:RefundRequest):Promise<DeleteResult>
 
     find():Promise<RefundRequest[]>
+    findOneById(id:number):Promise<RefundRequest>
 
     findOneByTransaction(transaction:Transaction):Promise<RefundRequest>
 

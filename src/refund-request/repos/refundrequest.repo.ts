@@ -9,6 +9,10 @@ export class RefundRequestRepo implements IRefundRequest{
         @InjectRepository(RefundRequest) private readonly refundRequestRepo:Repository<RefundRequest>
     ){}
 
+    findOneById(id: number): Promise<RefundRequest> {
+        return this.refundRequestRepo.findOne({where:{id:id} , relations:['transaction']});
+    }
+
     findOneByTransaction(transaction: Transaction): Promise<RefundRequest> {
         return this.refundRequestRepo.findOne({where:{transaction:transaction}});
     }

@@ -20,6 +20,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { Transaction } from './transaction/entities/transaction.entity';
 import { RefundRequestModule } from './refund-request/refund-request.module';
 import { RefundRequest } from './refund-request/entities/refundrequest.entity';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { RefundRequest } from './refund-request/entities/refundrequest.entity';
     entities:[UserEntity, RefreshToken , EmailVerification , CreditCard , ServiceProvider , Service , Transaction , RefundRequest],
     synchronize:true,
   }), 
-  AuthModule, EmailModule, CreditcardModule, ServiceproviderModule, ServiceModule, TransactionModule, RefundRequestModule
+  AuthModule, EmailModule, CreditcardModule, ServiceproviderModule, ServiceModule, TransactionModule, RefundRequestModule, AdminModule
 ],
   controllers: [AppController, ],
   providers: [AppService, ],

@@ -7,7 +7,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { LocalGuard } from 'src/auth/guards/local.guard';
 import { AuthService } from 'src/auth/services/auth/auth.service';
 import { EmailService } from 'src/email/services/email.service';
-import { UserEntity} from 'src/user/entities/user.entity';
+import { UserEntity, } from 'src/user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -111,4 +111,5 @@ export class AuthController {
         emailVerification.user.isActive = true;
         return this.authService.updateUser(emailVerification.user); 
     }
+
 }
